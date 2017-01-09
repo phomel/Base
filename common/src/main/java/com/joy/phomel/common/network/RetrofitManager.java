@@ -3,6 +3,8 @@ package com.joy.phomel.common.network;
 import android.content.Context;
 import android.util.Log;
 
+import com.joy.phomel.common.utils.NetworkUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +20,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
+ * 初始化网络请求管理
  * 网络请求管理
  */
 
@@ -33,6 +36,11 @@ public class RetrofitManager {
     public static final int CACHE_STALE_LONG = 60 * 60 * 24;
     //自己的base_url
     public static final String BASE_URL = "http://www.baidu.com";
+    private final Retrofit mRetrofit;
+
+    public Retrofit getRetrofit() {
+        return mRetrofit;
+    }
 
     public static RetrofitManager getInstance() {
         return instance;
@@ -41,7 +49,7 @@ public class RetrofitManager {
     private RetrofitManager(Context context) {
         mContext = context;
         initOkHttpClient();
-        Retrofit retrofit = new Retrofit.Builder()
+        mRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(mOkHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -96,7 +104,7 @@ public class RetrofitManager {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetUtils.isConnected(mContext)) {
+            if (!NetworkUtils.isHaveNetWork) {
                 //没网时只使用缓存
                 //自定义请求头，可以在响应头对请求头的header进行拦截，配置不同的缓存策略
                 request = request.newBuilder()
@@ -105,7 +113,7 @@ public class RetrofitManager {
                         .build();
             }
             Response response = chain.proceed(request);
-            if (NetUtils.isConnected(mContext)) {
+            if (NetworkUtils.isHaveNetWork) {
                 //有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置
                 Log.e("Interceptor", "response: " + response.toString());
                 //添加头信息，配置Cache-Control

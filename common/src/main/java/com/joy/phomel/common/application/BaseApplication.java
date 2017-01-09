@@ -1,9 +1,13 @@
 package com.joy.phomel.common.application;
 
 import android.app.Application;
+import android.content.Context;
 
+import com.joy.phomel.common.image.GlideUtils;
+import com.joy.phomel.common.network.RetrofitManager;
 import com.joy.phomel.common.utils.FileUtils;
 import com.joy.phomel.common.utils.L;
+import com.joy.phomel.common.utils.NetworkUtils;
 import com.joy.phomel.common.utils.SDCardManager;
 
 import java.io.File;
@@ -29,10 +33,12 @@ public class BaseApplication extends Application {
     //日志目录
     public static String LOG_DIR;
 
+    protected Context mContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        //初始化第三方框架
+        mContext = this;
         init();
     }
 
@@ -55,8 +61,11 @@ public class BaseApplication extends Application {
         FileUtils.checkDir(FILE_DIR);
         FileUtils.checkDir(LOG_DIR);
 
-        //初始化UniversalImageLoader图片加载
-
-        //初始化Volley
+        //初始化Glide图片加载,替换错误图片和加载中图片
+        GlideUtils.init(mContext, android.R.mipmap.sym_def_app_icon, android.R.mipmap.sym_def_app_icon);
+        //初始化Retrofit，修改base_url
+        RetrofitManager.init(this);
+        //初始化网络状态
+        NetworkUtils.initNetStatus(this);
     }
 }
