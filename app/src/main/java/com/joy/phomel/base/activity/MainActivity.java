@@ -7,8 +7,14 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.joy.phomel.base.R;
+import com.joy.phomel.common.image.GlideUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import java.security.PublicKey;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +22,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
     }
-
 }
